@@ -23,7 +23,7 @@ type RawRow = Record<keyof Omit<Figure, 'aliases' | 'difficulty'>, string> & {
 };
 
 export async function loadFigures(): Promise<Figure[]> {
-  const asset = Asset.fromModule(require('../assets/data/figures.csv'));
+  const asset = Asset.fromModule(require('../assets/data/figures_2.csv'));
   await asset.downloadAsync();
   const uri = asset.localUri ?? asset.uri;
   const response = await fetch(uri);

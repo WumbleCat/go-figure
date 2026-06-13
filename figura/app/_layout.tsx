@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { View, ActivityIndicator, Platform, Pressable, StyleSheet, Text } from 'react-native';
+import { View, ActivityIndicator, Platform, Pressable, StyleSheet, Text, type ViewStyle } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -31,31 +31,29 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={shell.root}>
-      <WebShell>
-        <SafeAreaProvider>
-          <FiguresProvider>
-            <StatsProvider>
-              <PreloadGate>
-                <StatusBar style="dark" />
-                <Stack
-                  screenOptions={{
-                    headerStyle: { backgroundColor: colors.paper },
-                    headerShadowVisible: false,
-                    headerTintColor: colors.ink,
-                    headerTitleAlign: 'left',
-                    headerTitle: () => <HeaderLogo />,
-                    contentStyle: { backgroundColor: colors.paper },
-                  }}
-                >
-                  <Stack.Screen name="index" options={{ title: 'Figura' }} />
-                  <Stack.Screen name="play" options={{ title: 'Round' }} />
-                  <Stack.Screen name="stats" options={{ title: 'Stats' }} />
-                </Stack>
-              </PreloadGate>
-            </StatsProvider>
-          </FiguresProvider>
-        </SafeAreaProvider>
-      </WebShell>
+      <SafeAreaProvider>
+        <FiguresProvider>
+          <StatsProvider>
+            <PreloadGate>
+              <StatusBar style="dark" />
+              <Stack
+                screenOptions={{
+                  headerStyle: { backgroundColor: colors.paper },
+                  headerShadowVisible: false,
+                  headerTintColor: colors.ink,
+                  headerTitleAlign: 'left',
+                  headerTitle: () => <HeaderLogo />,
+                  contentStyle: contentStyle,
+                }}
+              >
+                <Stack.Screen name="index" options={{ title: 'Figura' }} />
+                <Stack.Screen name="play" options={{ title: 'Round' }} />
+                <Stack.Screen name="stats" options={{ title: 'Stats' }} />
+              </Stack>
+            </PreloadGate>
+          </StatsProvider>
+        </FiguresProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
@@ -77,14 +75,15 @@ function HeaderLogo() {
   );
 }
 
-function WebShell({ children }: { children: React.ReactNode }) {
-  if (Platform.OS !== 'web') return <>{children}</>;
-  return (
-    <View style={shell.webOuter}>
-      <View style={shell.webInner}>{children}</View>
-    </View>
-  );
-}
+const contentStyle: ViewStyle =
+  Platform.OS === 'web'
+    ? {
+        backgroundColor: colors.paper,
+        width: '100%',
+        maxWidth: 480,
+        marginHorizontal: 'auto',
+      }
+    : { backgroundColor: colors.paper };
 
 function PreloadGate({ children }: { children: React.ReactNode }) {
   const { ready: figuresReady } = useFigures();
@@ -108,19 +107,7 @@ function LoadingScreen() {
 }
 
 const shell = StyleSheet.create({
-  root: { flex: 1 },
-  webOuter: {
-    flex: 1,
-    backgroundColor: '#1A1814',
-    alignItems: 'center',
-  },
-  webInner: {
-    flex: 1,
-    width: '100%',
-    maxWidth: 480,
-    backgroundColor: colors.paper,
-    marginHorizontal: 'auto',
-  },
+  root: { flex: 1, backgroundColor: colors.paper },
   logoHit: {
     paddingVertical: 4,
     paddingRight: 8,
