@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -30,33 +30,44 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <FiguresProvider>
-          <StatsProvider>
-            <PreloadGate>
-              <StatusBar style="dark" />
-              <Stack
-                screenOptions={{
-                  headerStyle: { backgroundColor: colors.paper },
-                  headerShadowVisible: false,
-                  headerTintColor: colors.ink,
-                  headerTitleStyle: {
-                    fontFamily: 'CormorantGaramond_600SemiBold',
-                    fontSize: 22,
-                  },
-                  contentStyle: { backgroundColor: colors.paper },
-                }}
-              >
-                <Stack.Screen name="index" options={{ title: 'Figura' }} />
-                <Stack.Screen name="play" options={{ title: 'Round' }} />
-                <Stack.Screen name="stats" options={{ title: 'Stats' }} />
-              </Stack>
-            </PreloadGate>
-          </StatsProvider>
-        </FiguresProvider>
-      </SafeAreaProvider>
+    <GestureHandlerRootView style={shell.root}>
+      <WebShell>
+        <SafeAreaProvider>
+          <FiguresProvider>
+            <StatsProvider>
+              <PreloadGate>
+                <StatusBar style="dark" />
+                <Stack
+                  screenOptions={{
+                    headerStyle: { backgroundColor: colors.paper },
+                    headerShadowVisible: false,
+                    headerTintColor: colors.ink,
+                    headerTitleStyle: {
+                      fontFamily: 'CormorantGaramond_600SemiBold',
+                      fontSize: 22,
+                    },
+                    contentStyle: { backgroundColor: colors.paper },
+                  }}
+                >
+                  <Stack.Screen name="index" options={{ title: 'Figura' }} />
+                  <Stack.Screen name="play" options={{ title: 'Round' }} />
+                  <Stack.Screen name="stats" options={{ title: 'Stats' }} />
+                </Stack>
+              </PreloadGate>
+            </StatsProvider>
+          </FiguresProvider>
+        </SafeAreaProvider>
+      </WebShell>
     </GestureHandlerRootView>
+  );
+}
+
+function WebShell({ children }: { children: React.ReactNode }) {
+  if (Platform.OS !== 'web') return <>{children}</>;
+  return (
+    <View style={shell.webOuter}>
+      <View style={shell.webInner}>{children}</View>
+    </View>
   );
 }
 
@@ -80,3 +91,19 @@ function LoadingScreen() {
     </View>
   );
 }
+
+const shell = StyleSheet.create({
+  root: { flex: 1 },
+  webOuter: {
+    flex: 1,
+    backgroundColor: '#1A1814',
+    alignItems: 'center',
+  },
+  webInner: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 480,
+    backgroundColor: colors.paper,
+    marginHorizontal: 'auto',
+  },
+});
