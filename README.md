@@ -1,5 +1,9 @@
 # go-figure
 
+## Live site
+
+Play it in your browser: **https://go-figure-9727qaulm-komeths-projects.vercel.app/**
+
 ## Run locally
 
 ```sh
@@ -46,4 +50,4 @@ Open `http://localhost:3000` and confirm all routes (`/`, `/play`, `/stats`) loa
 ### Notes
 
 - Node 22 LTS or 24 both work; the `postinstall` hook in `figura/package.json` patches a Metro-on-Windows ESM issue and is a no-op elsewhere.
-- The dataset (`figura/assets/data/figures.csv`) is bundled into the export, so no runtime fetch from a remote origin is required.
+- The dataset (`figura/assets/data/figures_2.csv`) is bundled into the export, so no runtime fetch from a remote origin is required.
