@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { View, ActivityIndicator, Platform, StyleSheet } from 'react-native';
-import { Stack } from 'expo-router';
+import React, { useCallback, useEffect } from 'react';
+import { View, ActivityIndicator, Platform, Pressable, StyleSheet, Text } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -42,10 +42,8 @@ export default function RootLayout() {
                     headerStyle: { backgroundColor: colors.paper },
                     headerShadowVisible: false,
                     headerTintColor: colors.ink,
-                    headerTitleStyle: {
-                      fontFamily: 'CormorantGaramond_600SemiBold',
-                      fontSize: 22,
-                    },
+                    headerTitleAlign: 'left',
+                    headerTitle: () => <HeaderLogo />,
                     contentStyle: { backgroundColor: colors.paper },
                   }}
                 >
@@ -59,6 +57,23 @@ export default function RootLayout() {
         </SafeAreaProvider>
       </WebShell>
     </GestureHandlerRootView>
+  );
+}
+
+function HeaderLogo() {
+  const router = useRouter();
+  const goHome = useCallback(() => router.navigate('/'), [router]);
+  return (
+    <Pressable
+      onPress={goHome}
+      accessibilityRole="link"
+      accessibilityLabel="Figura — return to home"
+      android_disableSound
+      hitSlop={8}
+      style={shell.logoHit}
+    >
+      <Text style={shell.logoText}>Figura</Text>
+    </Pressable>
   );
 }
 
@@ -105,5 +120,15 @@ const shell = StyleSheet.create({
     maxWidth: 480,
     backgroundColor: colors.paper,
     marginHorizontal: 'auto',
+  },
+  logoHit: {
+    paddingVertical: 4,
+    paddingRight: 8,
+  },
+  logoText: {
+    fontFamily: 'CormorantGaramond_600SemiBold',
+    fontSize: 22,
+    color: colors.ink,
+    letterSpacing: 0.3,
   },
 });
